@@ -14,11 +14,11 @@ const base = process.env.BASE || "/";
 
   The purpose of pulling various HTML pages is to structure <meta> data differently
 */
-const getHTMLPage = async ({ isProduction, url }) => {
+const getHTMLPageType = async ({ isProduction, url }) => {
   // Maps desired URL to built HTML files
   const templatePagePaths = {
-    admin: "src/pages/admin/",
-    homepage: "src/pages/homepage/",
+    admin: "src/page_types/admin/",
+    homepage: "src/page_types/homepage/",
   };
 
   return await fs.readFile(
@@ -59,13 +59,13 @@ app.use("*", async (req, res) => {
   try {
     const url = req.originalUrl.replace(base, "");
 
-    const templateHtml = await getHTMLPage({ isProduction, url });
+    const templateHtml = await getHTMLPageType({ isProduction, url });
 
     let template;
     let render;
     if (!isProduction) {
       // Always read fresh template in development
-      template = await getHTMLPage({ isProduction, url });
+      template = await getHTMLPageType({ isProduction, url });
       template = await vite.transformIndexHtml(url, template);
       render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
     } else {

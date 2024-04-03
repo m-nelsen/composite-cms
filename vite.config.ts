@@ -8,9 +8,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
+        // Changes to HTML paths here must be reflected in './server.js' getHTMLPageType()
         main: resolve(__dirname, "index.html"),
-        admin: resolve(__dirname, "src/pages/admin/index.html"),
-        homepage: resolve(__dirname, "src/pages/homepage/index.html"),
+        admin: resolve(__dirname, "src/page_types/admin/index.html"),
+        homepage: resolve(__dirname, "src/page_types/homepage/index.html"),
       },
     },
   },
