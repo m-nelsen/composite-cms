@@ -1,24 +1,41 @@
 import fs from "node:fs/promises";
 import express from "express";
-import TestRoute from "./routes/test.js";
 
 // Constants
 const isProduction = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 5173;
 const base = process.env.BASE || "/";
 
+/*
+  Get cached production asset from ./dist directory or fresh dev page from /src/pages/
+
+  This function will eventually need to pull its url param from some sort of API call.
+  url will eventually be a page type like "homepage", "admin", "section", "story"
+
+  The purpose of pulling various HTML pages is to structure <meta> data differently
+*/
+const getHTMLPage = async ({ isProduction, url }) => {
+  // Maps desired URL to built HTML files
+  const templatePagePaths = {
+    admin: "src/pages/admin/",
+    homepage: "src/pages/homepage/",
+  };
+
+  return await fs.readFile(
+    `${isProduction ? "./dist/client/" : ""}${
+      templatePagePaths[url] || ""
+    }index.html`,
+    "utf-8"
+  );
+};
+
 // Cached production assets
-const templateHtml = isProduction
-  ? await fs.readFile("./dist/client/index.html", "utf-8")
-  : "";
 const ssrManifest = isProduction
   ? await fs.readFile("./dist/client/.vite/ssr-manifest.json", "utf-8")
   : undefined;
 
 // Create http server
 const app = express();
-
-TestRoute();
 
 // Add Vite or respective production middlewares
 let vite;
@@ -42,11 +59,13 @@ app.use("*", async (req, res) => {
   try {
     const url = req.originalUrl.replace(base, "");
 
+    const templateHtml = await getHTMLPage({ isProduction, url });
+
     let template;
     let render;
     if (!isProduction) {
       // Always read fresh template in development
-      template = await fs.readFile("./index.html", "utf-8");
+      template = await getHTMLPage({ isProduction, url });
       template = await vite.transformIndexHtml(url, template);
       render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
     } else {
