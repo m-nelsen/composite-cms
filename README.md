@@ -1,1 +1,1 @@
-# composite-cms
+# Composite CMS
