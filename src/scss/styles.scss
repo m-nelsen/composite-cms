@@ -1,2 +1,22 @@
-// Import all of Bootstrap's CSS
-@import "bootstrap/scss/bootstrap";
+// Override default bootstrap values
+$light: #d2deec;
+$dark: #003997;
+$primary: #004cc4;
+$secondary: #1695bc;
+$info: #00c5a8;
+$success: #00b166;
+$warning: #e6cf00;
+$danger: #f71a00;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+);
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
