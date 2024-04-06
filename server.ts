@@ -54,6 +54,10 @@ if (!isProduction) {
   app.use(base, sirv("./dist/client", { extensions: [] }));
 }
 
+app.get("/api", (req, res) => {
+  res.send("Custom data from '/api' endpoints");
+});
+
 // Serve HTML
 app.use("*", async (req, res) => {
   try {
