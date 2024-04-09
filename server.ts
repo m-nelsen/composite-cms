@@ -1,33 +1,15 @@
 import fs from "node:fs/promises";
-import express from "express";
+import express, { Request, Response } from "express";
+import "./config/database.ts";
+import { getHTMLPageType } from "./utils/index.ts";
+
+import rootRoutes from "./routes/index.ts";
+import storyRoutes from "./routes/api/story.ts";
 
 // Constants
 const isProduction = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 5173;
 const base = process.env.BASE || "/";
-
-/*
-  Get cached production asset from ./dist directory or fresh dev page from /src/pages/
-
-  This function will eventually need to pull its url param from some sort of API call.
-  url will eventually be a page type like "homepage", "admin", "section", "story"
-
-  The purpose of pulling various HTML pages is to structure <meta> data differently
-*/
-const getHTMLPageType = async ({ isProduction, url }) => {
-  // Maps desired URL to built HTML files
-  const templatePagePaths = {
-    admin: "src/page_types/admin/",
-    homepage: "src/page_types/homepage/",
-  };
-
-  return await fs.readFile(
-    `${isProduction ? "./dist/client/" : ""}${
-      templatePagePaths[url] || ""
-    }index.html`,
-    "utf-8"
-  );
-};
 
 // Cached production assets
 const ssrManifest = isProduction
@@ -38,7 +20,7 @@ const ssrManifest = isProduction
 const app = express();
 
 // Add Vite or respective production middlewares
-let vite;
+let vite: any;
 if (!isProduction) {
   const { createServer } = await import("vite");
   vite = await createServer({
@@ -54,14 +36,16 @@ if (!isProduction) {
   app.use(base, sirv("./dist/client", { extensions: [] }));
 }
 
-app.get("/api", (req, res) => {
-  res.send("Custom data from '/api' endpoints");
-});
+app.use(express.json());
+
+// Routes
+app.use("/api/story", storyRoutes);
+app.use("/", rootRoutes);
 
 // Serve HTML
-app.use("*", async (req, res) => {
+app.use("*", async (req: Request, res: Response) => {
   try {
-    const url = req.originalUrl.replace(base, "");
+    const url: string = req.originalUrl.replace(base, "");
 
     const templateHtml = await getHTMLPageType({ isProduction, url });
 
@@ -74,6 +58,7 @@ app.use("*", async (req, res) => {
       render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
     } else {
       template = templateHtml;
+      //@ts-ignore
       render = (await import("./dist/server/entry-server.js")).render;
     }
 
@@ -84,7 +69,7 @@ app.use("*", async (req, res) => {
       .replace(`<!--app-html-->`, rendered.html ?? "");
 
     res.status(200).set({ "Content-Type": "text/html" }).send(html);
-  } catch (e) {
+  } catch (e: any) {
     vite?.ssrFixStacktrace(e);
     console.log(e.stack);
     res.status(500).end(e.stack);
