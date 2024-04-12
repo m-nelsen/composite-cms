@@ -5,7 +5,7 @@ import Story from "../models/story";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  res.locals = { global: "homepage", type: "homepage" };
+  res.locals = { globalContent: "homepage", type: "homepage" };
   viteMiddleware(req, res, next);
 });
 
@@ -20,9 +20,9 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     const { slug } = req.params;
 
-    const getStory = await Story.find({ slug });
+    const { ...getStory } = await Story.find({ slug });
 
-    res.locals.global = { global: getStory, type: "story" };
+    res.locals = { globalContent: getStory[0], type: "story" };
     viteMiddleware(req, res, next);
   }
 );

@@ -8,6 +8,6 @@ const data = window?.composite;
 ReactDOM.hydrateRoot(
   document.getElementById("root") as HTMLElement,
   <React.StrictMode>
-    <App props={data} />
+    <App {...data} />
   </React.StrictMode>
 );

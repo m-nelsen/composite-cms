@@ -5,7 +5,7 @@ import App from "./App";
 export function render(data: any) {
   const html = ReactDOMServer.renderToString(
     <React.StrictMode>
-      <App props={data} />
+      <App {...data} />
     </React.StrictMode>
   );
   return { html };
