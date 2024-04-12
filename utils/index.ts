@@ -31,18 +31,12 @@ export const slugify = (title: string) => {
  * @return {*}
  */
 export const getHTMLPageType = async ({
-  isProduction,
-  type,
+  isProduction = true,
+  type = "homepage",
 }: {
   isProduction: boolean;
   type: string;
 }) => {
-  let pageType = type;
-
-  if (!pageType) {
-    pageType = "homepage";
-  }
-
   // Maps desired URL to built HTML files
   const templatePagePaths: any = {
     admin: "src/page_types/admin/",
@@ -52,7 +46,7 @@ export const getHTMLPageType = async ({
 
   return await fs.readFile(
     `${isProduction ? "./dist/client/" : ""}${
-      templatePagePaths[pageType] || ""
+      templatePagePaths[type] || ""
     }index.html`,
     "utf-8"
   );
