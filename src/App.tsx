@@ -1,23 +1,19 @@
+import { FC } from "react";
+import { CompositeContext } from "./context/composite.tsx";
+import NavBar from "./components/navbar/index.tsx";
+import StoryBody from "./components/story_body/index.tsx";
+
 import "./scss/styles.scss";
 
-function App(props: any) {
+const App: FC = (props: any) => {
   return (
-    <>
-      <nav className="nav flex-column">
-        <a className="nav-link active" aria-current="page" href="#">
-          Active
-        </a>
-        <a className="nav-link" href="#">
-          Link
-        </a>
-        <a className="nav-link" href="#">
-          Link
-        </a>
-        <a className="nav-link disabled" aria-disabled="true">
-          Disabled
-        </a>
-      </nav>
-      <div className="container d-flex flex-column w-25 gap-3">
+    <CompositeContext.Provider value={{ ...props }}>
+      <NavBar />
+      <div className="container">
+        <StoryBody />
+      </div>
+
+      {/* <div className="container d-flex flex-column w-25 gap-3">
         <button className="btn btn-light">Light</button>
         <button className="btn btn-dark">Dark</button>
         <button className="btn btn-primary">Primary</button>
@@ -26,12 +22,9 @@ function App(props: any) {
         <button className="btn btn-success">Success</button>
         <button className="btn btn-warning">Warning</button>
         <button className="btn btn-danger">Danger</button>
-      </div>
-      <div className="container">
-        <pre>{JSON.stringify(props)}</pre>
-      </div>
-    </>
+      </div> */}
+    </CompositeContext.Provider>
   );
-}
+};
 
 export default App;
