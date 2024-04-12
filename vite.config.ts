@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, "index.html"),
         admin: resolve(__dirname, "src/page_types/admin/index.html"),
         homepage: resolve(__dirname, "src/page_types/homepage/index.html"),
+        story: resolve(__dirname, "src/page_types/story/index.html"),
       },
     },
   },
