@@ -1,6 +1,6 @@
 import "./scss/styles.scss";
 
-function App() {
+function App(props: any) {
   return (
     <>
       <nav className="nav flex-column">
@@ -26,6 +26,9 @@ function App() {
         <button className="btn btn-success">Success</button>
         <button className="btn btn-warning">Warning</button>
         <button className="btn btn-danger">Danger</button>
+      </div>
+      <div className="container">
+        <pre>{JSON.stringify(props)}</pre>
       </div>
     </>
   );
