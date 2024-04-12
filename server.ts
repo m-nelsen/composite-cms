@@ -3,6 +3,7 @@ import "./config/database.ts";
 import { initVite } from "./config/vite.ts";
 
 import apiStoryRoutes from "./routes/api/story.ts";
+import adminRoutes from "./routes/admin/index.ts";
 import rootRoutes from "./routes/index.ts";
 
 // Environment variables
@@ -20,6 +21,7 @@ initVite({ isProduction, base, app });
 
 // Routes
 app.use("/api/story", apiStoryRoutes);
+app.use("/admin", adminRoutes);
 app.use("/", rootRoutes);
 
 // Start http server
